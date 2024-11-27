@@ -1,0 +1,12 @@
+@baseUrl = http://localhost:3000/
+
+### Add a new book
+POST {{baseUrl}}book
+Content-Type: application/json
+
+{
+  "title": "New Book Title",
+  "author": "Author Name",
+  "description": "Book Description",
+  "publishDate": "2023-10-01"
+}

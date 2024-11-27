@@ -1,0 +1,27 @@
+@userId = 67474d38c2e4b21cfbaa5840
+
+### Add a new user
+POST http://localhost:3000/user
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "lolo@test.test",
+  "registerDate": "2023-10-01"
+}
+
+
+
+### Add Favorites
+POST http://localhost:3000//user/favorites
+Content-Type: application/json
+
+{
+  "userId": "{{userId}}",
+  "bookIds": ["67475f57dadbe977f8f7d554","67475e7bdadbe977f8f7d54c", "67475e89dadbe977f8f7d54e"]
+}
+
+### Get User Favorite Books
+GET http://localhost:3000/user/{{userId}}/favorites
+Content-Type: application/json
+###
