@@ -3,6 +3,19 @@ import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
 import { AbstractSchema } from './abstract.schema';
 import { DeleteResult } from 'mongodb';
 
+export interface Sort<TDocument> {
+  field: keyof TDocument;
+  order: 'asc' | 'desc';
+}
+
+export interface PageResponse<T> {
+  page: number;
+  page_size: number;
+  total: number;
+  total_pages: number;
+  items: T[];
+}
+
 export abstract class AbstractRepository<TDocument extends AbstractSchema> {
   protected abstract readonly logger: Logger;
 
@@ -92,5 +105,36 @@ export abstract class AbstractRepository<TDocument extends AbstractSchema> {
     filterQuery: FilterQuery<TDocument>,
   ): Promise<DeleteResult> {
     return this.model.deleteMany(filterQuery).exec();
+  }
+
+  async queryPage(
+    filterQuery: FilterQuery<TDocument>,
+    currentPageNumber: number,
+    pageSize: number,
+    sort: Sort<TDocument>,
+  ): Promise<PageResponse<TDocument>> {
+    const skip = (currentPageNumber - 1) * pageSize;
+    const total = await this.countDocuments(filterQuery);
+
+    const totalPages = Math.ceil(total / pageSize);
+    const sortOrder = sort.order === 'asc' ? 1 : -1;
+    const items = await this.model
+      .find(filterQuery)
+      .sort({ [sort.field as string]: sortOrder })
+      .skip(skip)
+      .limit(pageSize)
+      .exec();
+
+    return {
+      page: currentPageNumber,
+      page_size: pageSize,
+      total,
+      total_pages: totalPages,
+      items,
+    };
+  }
+
+  async countDocuments(filterQuery: FilterQuery<TDocument>): Promise<number> {
+    return this.model.countDocuments(filterQuery).exec();
   }
 }

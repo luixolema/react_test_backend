@@ -1,6 +1,6 @@
 @userId = 67474d38c2e4b21cfbaa5840
 
-### Add a new user
+### Add a new user, pass: Lolo123@test.test
 POST http://localhost:3000/user
 Content-Type: application/json
 
