@@ -9,11 +9,11 @@ export class Book extends AbstractSchema {
   @Prop({ required: true })
   author: string;
 
-  @Prop({ required: true })
-  description: string;
+  @Prop()
+  description?: string;
 
-  @Prop(Date)
-  publishDate: Date;
+  @Prop()
+  publishDate?: Date;
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book);

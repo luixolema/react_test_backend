@@ -16,6 +16,14 @@ export interface PageResponse<T> {
   items: T[];
 }
 
+export const EMPTY_PAGE: PageResponse<unknown> = {
+  page: 1,
+  pageSize: 0,
+  total: 0,
+  totalPages: 0,
+  items: [],
+};
+
 export abstract class AbstractRepository<TDocument extends AbstractSchema> {
   protected abstract readonly logger: Logger;
 

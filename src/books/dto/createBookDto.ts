@@ -1,8 +1,8 @@
 import {
-  IsNotEmpty,
-  IsString,
-  IsOptional,
   IsDateString,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
 } from 'class-validator';
 
 export class CreateBookDto {
@@ -14,6 +14,7 @@ export class CreateBookDto {
   @IsNotEmpty()
   author: string;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   description: string;

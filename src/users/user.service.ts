@@ -40,7 +40,6 @@ export class UserService {
   }
 
   async addFavorites(request: ModifyFavoriteDto) {
-    console.log('request', request);
     await ClassValidator.validate(request);
     const user = this.getLoggedUser();
     const favorites = new Set([...user.favoriteBooks, ...request.bookIds]);
@@ -52,8 +51,6 @@ export class UserService {
   }
 
   async removeFavorites(request: ModifyFavoriteDto) {
-    console.log('request', request);
-    
     await ClassValidator.validate(request);
     const user = this.getLoggedUser();
     const favorites = new Set(user.favoriteBooks);

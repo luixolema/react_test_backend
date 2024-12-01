@@ -38,7 +38,7 @@ export class BookService {
     return this.bookRepository.findByIdAndUpdate(dto._id, dto);
   }
 
-  async findBook(
+  async findBooks(
     findBooksDto: FindBooksDto,
     ids: string[] = [],
   ): Promise<PageResponse<Book>> {

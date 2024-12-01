@@ -4,7 +4,7 @@ import { BookService } from '../books/book.service';
 import { FindBooksRequest } from './dto/FindBooksRequest';
 import { AuthService } from '../auth/auth.service';
 import ClassValidator from '../comun/ClassValidator';
-import { PageResponse } from '../comun/data/abstract.respository';
+import { EMPTY_PAGE, PageResponse } from '../comun/data/abstract.respository';
 import { BooksWithFavorite } from './dto/FindBooksResponse';
 import { Book } from '../books/book.schema';
 
@@ -26,9 +26,14 @@ export class FavoritesService {
   ): Promise<PageResponse<BooksWithFavorite>> {
     await ClassValidator.validate(request);
     const favoriteBooks = this.auth.getLongedUser()?.favoriteBooks || [];
-    const data = await this.bookService.findBook(
+
+    if (request.favorites && !favoriteBooks.length) {
+      return Promise.resolve(EMPTY_PAGE as PageResponse<BooksWithFavorite>);
+    }
+
+    const data = await this.bookService.findBooks(
       request,
-      request.favorites ? favoriteBooks : [],
+      request.favorites ? favoriteBooks : undefined,
     );
 
     const items = data.items.map(
@@ -38,7 +43,7 @@ export class FavoritesService {
         title: book.title,
         description: book.description,
         author: book.author,
-        publishDate: book.publishDate.toISOString(),
+        publishDate: book.publishDate?.toISOString(),
       }),
     );
 
@@ -54,7 +59,7 @@ export class FavoritesService {
       title: book.title,
       description: book.description,
       author: book.author,
-      publishDate: book.publishDate.toISOString(),
+      publishDate: book.publishDate?.toISOString(),
     };
   }
 }
