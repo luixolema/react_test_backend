@@ -4,7 +4,6 @@ import { ModifyFavoriteDto } from '../users/dto/ModifyFavoriteDto';
 import { FavoritesService } from './favorites.service';
 import { CreateUserDto } from '../users/dto/CreateUserDto';
 import { API_PREFIX } from '../comun/const';
-import { FindBooksDto } from './dto/FindBooksDto';
 
 @Controller(API_PREFIX + 'user')
 export class UserController {
@@ -31,5 +30,10 @@ export class UserController {
   @Post()
   addUser(@Body() request: CreateUserDto) {
     return this.userService.create(request);
+  }
+
+  @Get('/books/:id')
+  details(@Param('id') id: string) {
+    return this.favoriteService.findBook(id);
   }
 }

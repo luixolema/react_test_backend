@@ -46,7 +46,7 @@ export class BookService {
     const regex = new RegExp(findBooksDto.query, 'i');
 
     const filterQuery: FilterQuery<Book> = {
-      $or: [{ title: regex }, { description: regex }],
+      $or: [{ title: regex }, { author: regex }],
     };
 
     if (ids.length) {
@@ -55,8 +55,8 @@ export class BookService {
 
     return this.bookRepository.queryPage(
       filterQuery,
+      findBooksDto.page,
       findBooksDto.pageSize,
-      findBooksDto.limit,
       { field: 'title', order: 'asc' },
     );
   }

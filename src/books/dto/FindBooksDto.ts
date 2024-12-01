@@ -12,9 +12,4 @@ export class FindBooksDto {
   @Min(1)
   @Max(50)
   pageSize: number;
-
-  @IsInt()
-  @Min(1)
-  @Max(100)
-  limit: number;
 }

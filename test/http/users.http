@@ -1,7 +1,8 @@
 @userId = 67474d38c2e4b21cfbaa5840
+@baseUrl = http://localhost:3000/api/v1.1/user
 
 ### Add a new user, pass: Lolo123@test.test
-POST http://localhost:3000/user
+POST {{baseUrl}}
 Content-Type: application/json
 
 {
@@ -13,7 +14,7 @@ Content-Type: application/json
 
 
 ### Add Favorites
-POST http://localhost:3000//user/favorites
+POST {{baseUrl}}/favorites
 Content-Type: application/json
 
 {
@@ -22,6 +23,6 @@ Content-Type: application/json
 }
 
 ### Get User Favorite Books
-GET http://localhost:3000/user/{{userId}}/favorites
+GET {{baseUrl}}/{{userId}}/favorites
 Content-Type: application/json
 ###

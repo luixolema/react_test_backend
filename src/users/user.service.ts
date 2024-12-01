@@ -1,14 +1,17 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { ModifyFavoriteDto } from './dto/ModifyFavoriteDto';
 import { CreateUserDto } from './dto/CreateUserDto';
-import { validate } from 'class-validator';
 import ClassValidator from '../comun/ClassValidator';
-
+import { User } from './user.schema';
+import { ClsService } from 'nestjs-cls';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly cls: ClsService,
+  ) {}
 
   findAll() {
     return this.userRepository.find({});
@@ -37,10 +40,11 @@ export class UserService {
   }
 
   async addFavorites(request: ModifyFavoriteDto) {
+    console.log('request', request);
     await ClassValidator.validate(request);
-    const user = await this.userRepository.findById(request.userId);
+    const user = this.getLoggedUser();
     const favorites = new Set([...user.favoriteBooks, ...request.bookIds]);
-    this.userRepository.findByIdAndUpdate(request.userId, {
+    this.userRepository.findByIdAndUpdate(user._id.toString(), {
       favoriteBooks: [...favorites],
     });
 
@@ -48,16 +52,22 @@ export class UserService {
   }
 
   async removeFavorites(request: ModifyFavoriteDto) {
+    console.log('request', request);
+    
     await ClassValidator.validate(request);
-    const user = await this.userRepository.findById(request.userId);
+    const user = this.getLoggedUser();
     const favorites = new Set(user.favoriteBooks);
     request.bookIds.forEach((bookId) => {
       favorites.delete(bookId);
     });
-    this.userRepository.findByIdAndUpdate(request.userId, {
+    this.userRepository.findByIdAndUpdate(user._id.toString(), {
       favoriteBooks: [...favorites],
     });
 
     return [...favorites];
+  }
+
+  private getLoggedUser() {
+    return this.cls.get<User>('user');
   }
 }

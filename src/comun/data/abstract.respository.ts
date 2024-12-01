@@ -3,16 +3,16 @@ import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
 import { AbstractSchema } from './abstract.schema';
 import { DeleteResult } from 'mongodb';
 
-export interface Sort<TDocument> {
-  field: keyof TDocument;
+export interface Sort<T> {
+  field: keyof T;
   order: 'asc' | 'desc';
 }
 
 export interface PageResponse<T> {
   page: number;
-  page_size: number;
+  pageSize: number;
   total: number;
-  total_pages: number;
+  totalPages: number;
   items: T[];
 }
 
@@ -109,11 +109,11 @@ export abstract class AbstractRepository<TDocument extends AbstractSchema> {
 
   async queryPage(
     filterQuery: FilterQuery<TDocument>,
-    currentPageNumber: number,
+    pageNumber: number,
     pageSize: number,
     sort: Sort<TDocument>,
   ): Promise<PageResponse<TDocument>> {
-    const skip = (currentPageNumber - 1) * pageSize;
+    const skip = (pageNumber - 1) * pageSize;
     const total = await this.countDocuments(filterQuery);
 
     const totalPages = Math.ceil(total / pageSize);
@@ -126,10 +126,10 @@ export abstract class AbstractRepository<TDocument extends AbstractSchema> {
       .exec();
 
     return {
-      page: currentPageNumber,
-      page_size: pageSize,
+      page: pageNumber,
+      pageSize: pageSize,
       total,
-      total_pages: totalPages,
+      totalPages: totalPages,
       items,
     };
   }
