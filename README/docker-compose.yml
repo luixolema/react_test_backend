@@ -1,0 +1,47 @@
+version: "3.3"
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo-prod
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123 
+    ports:
+      - 27017:27017
+    networks:
+      - network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        - DATABASE_URI=mongodb://root:123@mongo:27017
+        - MONGODB_DEBUG=false
+        - COGNITO_USER_POOL_ID=us-east-1_7cZzhT6km
+        - COGNITO_CLIENT_ID=600m7hk2lq863u060haaq23m5f
+    container_name: backend-prod
+    restart: always
+    ports:
+      - 3001:3001
+    networks:
+      - network
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:3001/api/v1.1/
+    container_name: frontend-prod
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - network
+
+networks:
+  network:
